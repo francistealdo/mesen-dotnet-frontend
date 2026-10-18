@@ -12,6 +12,7 @@ public sealed class MesenEmulator : IDisposable
     public bool IsRunning => _initialized && MesenNative.IsRunning();
 
     public event Action<byte[], int, int>? FrameReady;
+    public event Action? EmulationStopped;
 
     public void Initialize(
     IntPtr windowHandle,
@@ -159,12 +160,17 @@ public sealed class MesenEmulator : IDisposable
         _initialized = false;
     }
 
-    private void OnNotification(
-    int type,
-    IntPtr parameter)
+    private void OnNotification(int type, IntPtr parameter)
     {
         var notificationType =
-            (ConsoleNotificationType)type;
+        (ConsoleNotificationType)type;
+
+        if (notificationType ==
+            ConsoleNotificationType.EmulationStopped)
+        {
+            EmulationStopped?.Invoke();
+            return;
+        }
 
         if (notificationType !=
             ConsoleNotificationType.RefreshSoftwareRenderer)

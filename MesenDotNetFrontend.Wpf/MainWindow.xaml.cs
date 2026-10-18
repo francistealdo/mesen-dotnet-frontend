@@ -43,6 +43,8 @@ public partial class MainWindow : Window
 
             _emulator.FrameReady += OnFrameReady;
 
+            _emulator.EmulationStopped += OnEmulationStopped;
+
             _emulator.SetRendererSize(
                 (uint)Math.Max(
                     1,
@@ -110,6 +112,24 @@ public partial class MainWindow : Window
             (uint)Math.Round(e.NewSize.Height));
     }
 
+    private void OnEmulationStopped()
+    {
+        Dispatcher.BeginInvoke(() =>
+        {
+            _bitmap = null;
+
+            EmulatorScreen.Source = null;
+
+            NoRomText.Visibility =
+                Visibility.Visible;
+
+            PauseResumeMenuItem.Header =
+                "_Pause";
+
+            _keyboardInput.Reset();
+        });
+    }
+
     #endregion
 
     #region private methods OnClick
@@ -152,6 +172,16 @@ public partial class MainWindow : Window
                 MessageBoxButton.OK,
                 MessageBoxImage.Error);
         }
+    }
+
+    private void CloseRom_Click(object sender, RoutedEventArgs e)
+    {
+        if (!_emulator.IsRunning)
+        {
+            return;
+        }
+
+        _emulator.CloseRom();
     }
 
     private void PauseResume_Click(object sender, RoutedEventArgs e)
@@ -219,6 +249,9 @@ public partial class MainWindow : Window
 
     protected override void OnClosed(EventArgs e)
     {
+        _emulator.FrameReady -= OnFrameReady;
+        _emulator.EmulationStopped -= OnEmulationStopped;
+
         _emulator.Dispose();
 
         base.OnClosed(e);

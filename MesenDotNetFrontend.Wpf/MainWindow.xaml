@@ -9,6 +9,9 @@
                     <MenuItem
                         Header="_Open ROM..."
                         Click="OpenRom_Click" />
+                    <MenuItem
+                        Header="_Close ROM"
+                        Click="CloseRom_Click" />
                     <Separator />
                     <MenuItem Header="E_xit"
                         Click="Exit_Click"/>
@@ -26,23 +29,23 @@
             </Menu>
 
             <Border
-    x:Name="RendererContainer"
-    Background="Black"
-    SizeChanged="RendererContainer_SizeChanged">
+                x:Name="RendererContainer"
+                Background="Black"
+                SizeChanged="RendererContainer_SizeChanged">
 
                 <Grid>
                     <Image
-            x:Name="EmulatorScreen"
-            Stretch="Uniform"
-            RenderOptions.BitmapScalingMode="NearestNeighbor" />
+                        x:Name="EmulatorScreen"
+                        Stretch="Uniform"
+                        RenderOptions.BitmapScalingMode="NearestNeighbor" />
 
                     <TextBlock
-            x:Name="NoRomText"
-            Text="No ROM loaded"
-            Foreground="White"
-            FontSize="24"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center" />
+                        x:Name="NoRomText"
+                        Text="No ROM loaded"
+                        Foreground="White"
+                        FontSize="24"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center" />
                 </Grid>
 
             </Border>
