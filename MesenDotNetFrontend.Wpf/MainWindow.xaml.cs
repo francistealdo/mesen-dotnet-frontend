@@ -16,20 +16,7 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
 
-        try
-        {
-            InitializeComponent();
-
-            SourceInitialized += MainWindow_SourceInitialized;
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show(
-                ex.ToString(),
-                "Mesen initialization error",
-                MessageBoxButton.OK,
-                MessageBoxImage.Error);
-        }
+        SourceInitialized += MainWindow_SourceInitialized;
     }
 
     private void OpenRom_Click(object sender, RoutedEventArgs e)
@@ -47,9 +34,7 @@ public partial class MainWindow : Window
 
         try
         {
-            var loaded = _emulator.LoadRom(dialog.FileName);
-
-            if (!loaded)
+            if (!_emulator.LoadRom(dialog.FileName))
             {
                 MessageBox.Show(
                     "Mesen was unable to load the ROM.",
@@ -60,23 +45,7 @@ public partial class MainWindow : Window
                 return;
             }
 
-            var screenSize = _emulator.GetBaseScreenSize();
-
-            System.Diagnostics.Debug.WriteLine(
-                $"Base screen: {screenSize.Width}x{screenSize.Height}");
-
             _emulator.Start();
-
-            Task.Delay(2000);
-
-            _emulator.TakeScreenshot();
-
-            MessageBox.Show(
-                $"ROM loaded successfully.\n\n" +
-                $"Running: {_emulator.IsRunning}",
-                "Mesen",
-                MessageBoxButton.OK,
-                MessageBoxImage.Information);
         }
         catch (Exception ex)
         {

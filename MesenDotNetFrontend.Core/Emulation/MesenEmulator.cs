@@ -133,6 +133,8 @@ public sealed class MesenEmulator : IDisposable
             MesenNative.UnregisterNotificationCallback(
                 _notificationListener);
 
+            _notificationCallback = null;
+
             _notificationListener = IntPtr.Zero;
         }
 
