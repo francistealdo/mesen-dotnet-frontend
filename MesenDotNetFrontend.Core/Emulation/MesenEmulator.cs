@@ -1,4 +1,5 @@
 ﻿using MesenDotNetFrontend.Core.Interop;
+using MesenDotNetFrontend.Core.Models;
 using System.Runtime.InteropServices;
 
 namespace MesenDotNetFrontend.Core.Emulation;
@@ -14,9 +15,7 @@ public sealed class MesenEmulator : IDisposable
     public event Action<byte[], int, int>? FrameReady;
     public event Action? EmulationStopped;
 
-    public void Initialize(
-    IntPtr windowHandle,
-    IntPtr viewerHandle)
+    public void Initialize(IntPtr windowHandle, IntPtr viewerHandle, NesInputSettings inputSettings)
     {
         if (_initialized)
         {
@@ -32,13 +31,13 @@ public sealed class MesenEmulator : IDisposable
         MesenNative.InitDll();
 
         MesenNative.InitializeEmu(
-    homeFolder,
-    windowHandle,
-    viewerHandle,
-    useSoftwareRenderer: true,
-    noAudio: false,
-    noVideo: false,
-    noInput: false);
+            homeFolder,
+            windowHandle,
+            viewerHandle,
+            useSoftwareRenderer: true,
+            noAudio: false,
+            noVideo: false,
+            noInput: false);
 
         var audioConfig =
     AudioConfigFactory.CreateDefault();
@@ -46,11 +45,9 @@ public sealed class MesenEmulator : IDisposable
         MesenNative.SetAudioConfig(
             audioConfig);
 
-        var nesConfig =
-    NesConfigFactory.CreateDefault();
+        var nesConfig = NesConfigFactory.CreateDefault(inputSettings);
 
-        MesenNative.SetNesConfig(
-            nesConfig);
+        MesenNative.SetNesConfig(nesConfig);
 
         _notificationCallback = OnNotification;
 
@@ -263,4 +260,13 @@ public sealed class MesenEmulator : IDisposable
         CurrentRomPath == null
             ? null
             : Path.GetFileName(CurrentRomPath);
+
+    public void ApplyInputSettings(NesInputSettings inputSettings)
+    {
+        EnsureInitialized();
+
+        var nesConfig =NesConfigFactory.CreateDefault(inputSettings);
+
+        MesenNative.SetNesConfig(nesConfig);
+    }
 }

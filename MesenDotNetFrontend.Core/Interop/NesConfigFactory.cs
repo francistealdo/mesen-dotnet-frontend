@@ -1,4 +1,6 @@
-﻿namespace MesenDotNetFrontend.Core.Interop;
+﻿using MesenDotNetFrontend.Core.Models;
+
+namespace MesenDotNetFrontend.Core.Interop;
 
 public static class NesConfigFactory
 {
@@ -25,7 +27,7 @@ public static class NesConfigFactory
         0xFFB5EBF2, 0xFFB8B8B8, 0xFF000000, 0xFF000000
     ];
 
-    public static InteropNesConfig CreateDefault()
+    public static InteropNesConfig CreateDefault(NesInputSettings inputSettings)
     {
         var palette = new uint[512];
 
@@ -36,7 +38,7 @@ public static class NesConfigFactory
 
         return new InteropNesConfig
         {
-            Port1 = CreateNesController(),
+            Port1 = CreateNesController(inputSettings),
             Port2 = CreateController(),
             ExpPort = CreateController(),
 
@@ -132,33 +134,42 @@ public static class NesConfigFactory
         };
     }
 
-    private static InteropControllerConfig CreateNesController()
+    private static InteropControllerConfig CreateNesController(
+    NesInputSettings settings)
     {
         var mapping = CreateEmptyMapping();
 
         mapping.A =
-            MesenInputNative.GetKeyCode("S");
+            MesenInputNative.GetKeyCode(
+                settings.A);
 
         mapping.B =
-            MesenInputNative.GetKeyCode("A");
+            MesenInputNative.GetKeyCode(
+                settings.B);
 
         mapping.Up =
-            MesenInputNative.GetKeyCode("Up Arrow");
+            MesenInputNative.GetKeyCode(
+                settings.Up);
 
         mapping.Down =
-            MesenInputNative.GetKeyCode("Down Arrow");
+            MesenInputNative.GetKeyCode(
+                settings.Down);
 
         mapping.Left =
-            MesenInputNative.GetKeyCode("Left Arrow");
+            MesenInputNative.GetKeyCode(
+                settings.Left);
 
         mapping.Right =
-            MesenInputNative.GetKeyCode("Right Arrow");
+            MesenInputNative.GetKeyCode(
+                settings.Right);
 
         mapping.Select =
-            MesenInputNative.GetKeyCode("Q");
+            MesenInputNative.GetKeyCode(
+                settings.Select);
 
         mapping.Start =
-            MesenInputNative.GetKeyCode("W");
+            MesenInputNative.GetKeyCode(
+                settings.Start);
 
         return new InteropControllerConfig
         {
@@ -170,7 +181,6 @@ public static class NesConfigFactory
                 Mapping2 = CreateEmptyMapping(),
                 Mapping3 = CreateEmptyMapping(),
                 Mapping4 = CreateEmptyMapping(),
-
                 TurboSpeed = 2
             }
         };

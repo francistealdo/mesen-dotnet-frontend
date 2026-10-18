@@ -25,6 +25,12 @@
                     <MenuItem Header="_Reset" Click="Reset_Click" />
                 </MenuItem>
 
+                <MenuItem Header="_Settings">
+                    <MenuItem
+                    Header="_Controls..."
+                    Click="ControlsSettings_Click" />
+                </MenuItem>
+
                 <MenuItem Header="_Help" />
             </Menu>
 

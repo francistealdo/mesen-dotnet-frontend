@@ -20,11 +20,9 @@ public sealed class NesKeyboardInput
         MesenInputNative.ResetKeyState();
     }
 
-    private static void SetKeyState(
-        Key key,
-        bool pressed)
+    private static void SetKeyState(Key key, bool pressed)
     {
-        var keyName = GetMesenKeyName(key);
+        var keyName = MesenKeyNameMapper.FromWpfKey(key);
 
         if (keyName == null)
         {
@@ -42,24 +40,5 @@ public sealed class NesKeyboardInput
         MesenInputNative.SetKeyState(
             keyCode,
             pressed);
-    }
-
-    private static string? GetMesenKeyName(
-        Key key)
-    {
-        return key switch
-        {
-            Key.Up => "Up Arrow",
-            Key.Down => "Down Arrow",
-            Key.Left => "Left Arrow",
-            Key.Right => "Right Arrow",
-
-            Key.A => "A",
-            Key.S => "S",
-            Key.Q => "Q",
-            Key.W => "W",
-
-            _ => null
-        };
     }
 }

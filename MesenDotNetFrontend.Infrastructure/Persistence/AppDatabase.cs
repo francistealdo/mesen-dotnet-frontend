@@ -33,6 +33,7 @@ public static class AppDatabase
         connection.Open();
 
         CreateLogTable(connection);
+        CreateInputSettingsTable(connection);
     }
 
     #region Tables
@@ -50,6 +51,23 @@ public static class AppDatabase
                 Rom TEXT NULL,
                 Category TEXT NULL,
                 Description TEXT NULL
+            );
+            """;
+
+        command.ExecuteNonQuery();
+    }
+
+    private static void CreateInputSettingsTable(SqliteConnection connection)
+    {
+        using var command = connection.CreateCommand();
+
+        command.CommandText =
+            """
+            CREATE TABLE IF NOT EXISTS InputSettings
+            (
+                Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                Action TEXT NOT NULL UNIQUE,
+                KeyName TEXT NOT NULL
             );
             """;
 

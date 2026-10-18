@@ -1,6 +1,7 @@
 ﻿using MesenDotNetFrontend.Core.Emulation;
 using MesenDotNetFrontend.Infrastructure.Persistence;
 using MesenDotNetFrontend.Wpf.Input;
+using MesenDotNetFrontend.Wpf.Settings;
 using Microsoft.Win32;
 using System.Windows;
 using System.Windows.Input;
@@ -32,14 +33,13 @@ public partial class MainWindow : Window
     {
         try
         {
-            var helper =
-                new WindowInteropHelper(this);
+            var helper = new WindowInteropHelper(this);
 
             var handle = helper.Handle;
 
-            _emulator.Initialize(
-                handle,
-                handle);
+            var inputSettings = InputSettingsLoader.Load();
+
+            _emulator.Initialize(handle, handle, inputSettings);
 
             _emulator.FrameReady += OnFrameReady;
 
@@ -229,6 +229,23 @@ public partial class MainWindow : Window
         AppLogRepository.Write(category: "System", description: "Exit");
 
         Close();
+    }
+
+    private void ControlsSettings_Click(object sender, RoutedEventArgs e)
+    {
+        var window = new ControlsSettingsWindow
+            {
+                Owner = this
+            };
+
+        window.SettingsSaved += () =>
+        {
+            var inputSettings = InputSettingsLoader.Load();
+
+            _emulator.ApplyInputSettings(inputSettings);
+        };
+
+        window.ShowDialog();
     }
 
     #endregion
