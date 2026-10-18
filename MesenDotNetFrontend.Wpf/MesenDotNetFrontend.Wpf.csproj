@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MesenDotNetFrontend.Core\MesenDotNetFrontend.Core.csproj" />
+    <ProjectReference Include="..\MesenDotNetFrontend.Infrastructure\MesenDotNetFrontend.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

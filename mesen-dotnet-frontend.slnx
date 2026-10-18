@@ -1,4 +1,5 @@
 <Solution>
   <Project Path="MesenDotNetFrontend.Core/MesenDotNetFrontend.Core.csproj" />
+  <Project Path="MesenDotNetFrontend.Infrastructure/MesenDotNetFrontend.Infrastructure.csproj" Id="a0efffa6-61be-426c-a287-d1b839082954" />
   <Project Path="MesenDotNetFrontend.Wpf/MesenDotNetFrontend.Wpf.csproj" />
 </Solution>

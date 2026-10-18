@@ -78,7 +78,14 @@ public sealed class MesenEmulator : IDisposable
 
         MesenNative.Pause();
 
-        return MesenNative.LoadRom(path);
+        var loaded = MesenNative.LoadRom(path);
+
+        if (loaded)
+        {
+            CurrentRomPath = path;
+        }
+
+        return loaded;
     }
 
     public void Start()
@@ -113,6 +120,8 @@ public sealed class MesenEmulator : IDisposable
         }
 
         MesenNative.Stop();
+
+        CurrentRomPath = null;
     }
 
     public void SetRendererSize(
@@ -247,4 +256,11 @@ public sealed class MesenEmulator : IDisposable
                 ParamPtr = IntPtr.Zero
             });
     }
+
+    public string? CurrentRomPath { get; private set; }
+
+    public string? CurrentRomName =>
+        CurrentRomPath == null
+            ? null
+            : Path.GetFileName(CurrentRomPath);
 }

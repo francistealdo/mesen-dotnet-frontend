@@ -1,5 +1,5 @@
 ﻿using MesenDotNetFrontend.Core.Emulation;
-using MesenDotNetFrontend.Core.Interop;
+using MesenDotNetFrontend.Infrastructure.Persistence;
 using MesenDotNetFrontend.Wpf.Input;
 using Microsoft.Win32;
 using System.Windows;
@@ -94,8 +94,7 @@ public partial class MainWindow : Window
                 stride,
                 0);
 
-            NoRomText.Visibility =
-                Visibility.Collapsed;
+            NoRomText.Visibility = Visibility.Collapsed;
         });
     }
 
@@ -120,11 +119,9 @@ public partial class MainWindow : Window
 
             EmulatorScreen.Source = null;
 
-            NoRomText.Visibility =
-                Visibility.Visible;
+            NoRomText.Visibility = Visibility.Visible;
 
-            PauseResumeMenuItem.Header =
-                "_Pause";
+            PauseResumeMenuItem.Header = "_Pause";
 
             _keyboardInput.Reset();
         });
@@ -163,6 +160,8 @@ public partial class MainWindow : Window
             _emulator.Start();
 
             PauseResumeMenuItem.Header = "_Pause";
+
+            AppLogRepository.Write(rom: _emulator.CurrentRomName, category: "Rom", description: "Open ROM");
         }
         catch (Exception ex)
         {
@@ -182,6 +181,8 @@ public partial class MainWindow : Window
         }
 
         _emulator.CloseRom();
+
+        AppLogRepository.Write(rom: _emulator.CurrentRomName, category: "Rom", description: "Close ROM");
     }
 
     private void PauseResume_Click(object sender, RoutedEventArgs e)
@@ -197,6 +198,8 @@ public partial class MainWindow : Window
 
             PauseResumeMenuItem.Header =
                 "_Pause";
+
+            AppLogRepository.Write(rom: _emulator.CurrentRomName, category: "Emulation", description: "Resume");
         }
         else
         {
@@ -204,6 +207,8 @@ public partial class MainWindow : Window
 
             PauseResumeMenuItem.Header =
                 "_Resume";
+
+            AppLogRepository.Write(rom: _emulator.CurrentRomName, category: "Emulation", description: "Pause");
         }
     }
 
@@ -215,10 +220,14 @@ public partial class MainWindow : Window
         }
 
         _emulator.Reset();
+
+        AppLogRepository.Write(rom: _emulator.CurrentRomName, category: "Rom", description: "Reset");
     }
 
     private void Exit_Click(object sender, RoutedEventArgs e)
     {
+        AppLogRepository.Write(category: "System", description: "Exit");
+
         Close();
     }
 
