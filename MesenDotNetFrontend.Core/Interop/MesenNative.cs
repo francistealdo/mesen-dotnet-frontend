@@ -80,4 +80,67 @@ public static class MesenNative
     [DllImport(DllName)]
     public static extern void SetAudioConfig(
     InteropAudioConfig config);
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct ExecuteShortcutParams
+    {
+        public EmulatorShortcut Shortcut;
+        public uint Param;
+        public IntPtr ParamPtr;
+    }
+
+    public enum EmulatorShortcut
+    {
+        FastForward,
+        Rewind,
+        RewindTenSecs,
+        RewindOneMin,
+
+        SelectSaveSlot1,
+        SelectSaveSlot2,
+        SelectSaveSlot3,
+        SelectSaveSlot4,
+        SelectSaveSlot5,
+        SelectSaveSlot6,
+        SelectSaveSlot7,
+        SelectSaveSlot8,
+        SelectSaveSlot9,
+        SelectSaveSlot10,
+        MoveToNextStateSlot,
+        MoveToPreviousStateSlot,
+        SaveState,
+        LoadState,
+
+        ToggleCheats,
+        ToggleFastForward,
+        ToggleRewind,
+
+        RunSingleFrame,
+
+        TakeScreenshot,
+
+        ToggleRecordVideo,
+        ToggleRecordAudio,
+        ToggleRecordMovie,
+
+        IncreaseSpeed,
+        DecreaseSpeed,
+        MaxSpeed,
+
+        Pause,
+        Reset,
+        PowerCycle,
+        ReloadRom,
+        PowerOff,
+        Exit,
+
+        ExecReset,
+        ExecPowerCycle,
+        ExecReloadRom,
+        ExecPowerOff
+    }
+
+    [DllImport(DllName)]
+    public static extern void ExecuteShortcut(
+    ExecuteShortcutParams p);
 }

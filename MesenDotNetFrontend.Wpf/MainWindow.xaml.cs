@@ -177,6 +177,16 @@ public partial class MainWindow : Window
         }
     }
 
+    private void Reset_Click(object sender, RoutedEventArgs e)
+    {
+        if (!_emulator.IsRunning)
+        {
+            return;
+        }
+
+        _emulator.Reset();
+    }
+
     private void Exit_Click(object sender, RoutedEventArgs e)
     {
         Close();

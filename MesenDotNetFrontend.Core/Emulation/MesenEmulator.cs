@@ -226,4 +226,19 @@ public sealed class MesenEmulator : IDisposable
     }
 
     public bool IsPaused => _initialized && MesenNative.IsPaused();
+
+    public void Reset()
+    {
+        EnsureInitialized();
+
+        MesenNative.ExecuteShortcut(
+            new MesenNative.ExecuteShortcutParams
+            {
+                Shortcut =
+                    MesenNative.EmulatorShortcut.ExecReset,
+
+                Param = 0,
+                ParamPtr = IntPtr.Zero
+            });
+    }
 }

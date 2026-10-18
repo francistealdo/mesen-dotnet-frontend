@@ -18,8 +18,8 @@
                     <MenuItem
                         x:Name="PauseResumeMenuItem"
                         Header="_Pause"
-                        Click="PauseResume_Click" />
-                    <MenuItem Header="_Reset" />
+                        Click="PauseResume_Click" />    
+                    <MenuItem Header="_Reset" Click="Reset_Click" />
                 </MenuItem>
 
                 <MenuItem Header="_Help" />
