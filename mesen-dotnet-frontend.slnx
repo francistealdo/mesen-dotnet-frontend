@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="MesenDotNetFrontend.Core/MesenDotNetFrontend.Core.csproj" />
+  <Project Path="MesenDotNetFrontend.Wpf/MesenDotNetFrontend.Wpf.csproj" />
+</Solution>

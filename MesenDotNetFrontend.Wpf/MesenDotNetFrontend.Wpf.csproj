@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MesenDotNetFrontend.Core\MesenDotNetFrontend.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Native\" />
+    <Folder Include="Resources\" />
+	  <None Include="Native\MesenCore.dll">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <TargetPath>MesenCore.dll</TargetPath>
+	  </None>
+  </ItemGroup>
+
+</Project>
