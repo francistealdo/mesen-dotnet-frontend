@@ -224,4 +224,6 @@ public sealed class MesenEmulator : IDisposable
 
         return (size.Width, size.Height);
     }
+
+    public bool IsPaused => _initialized && MesenNative.IsPaused();
 }

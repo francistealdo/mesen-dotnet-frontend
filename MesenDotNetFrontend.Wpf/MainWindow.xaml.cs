@@ -1,11 +1,12 @@
-﻿using Microsoft.Win32;
-using MesenDotNetFrontend.Core.Emulation;
+﻿using MesenDotNetFrontend.Core.Emulation;
+using MesenDotNetFrontend.Core.Interop;
+using MesenDotNetFrontend.Wpf.Input;
+using Microsoft.Win32;
 using System.Windows;
+using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Interop;
-using System.Windows.Input;
-using MesenDotNetFrontend.Wpf.Input;
 
 namespace MesenDotNetFrontend.Wpf;
 
@@ -140,6 +141,8 @@ public partial class MainWindow : Window
             }
 
             _emulator.Start();
+
+            PauseResumeMenuItem.Header = "_Pause";
         }
         catch (Exception ex)
         {
@@ -148,6 +151,29 @@ public partial class MainWindow : Window
                 "ROM loading error",
                 MessageBoxButton.OK,
                 MessageBoxImage.Error);
+        }
+    }
+
+    private void PauseResume_Click(object sender, RoutedEventArgs e)
+    {
+        if (!_emulator.IsRunning)
+        {
+            return;
+        }
+
+        if (_emulator.IsPaused)
+        {
+            _emulator.Start();
+
+            PauseResumeMenuItem.Header =
+                "_Pause";
+        }
+        else
+        {
+            _emulator.Pause();
+
+            PauseResumeMenuItem.Header =
+                "_Resume";
         }
     }
 

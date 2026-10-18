@@ -15,7 +15,10 @@
                 </MenuItem>
 
                 <MenuItem Header="_Emulation">
-                    <MenuItem Header="_Pause" />
+                    <MenuItem
+                        x:Name="PauseResumeMenuItem"
+                        Header="_Pause"
+                        Click="PauseResume_Click" />
                     <MenuItem Header="_Reset" />
                 </MenuItem>
 
