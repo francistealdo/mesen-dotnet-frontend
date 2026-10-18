@@ -35,9 +35,15 @@ public sealed class MesenEmulator : IDisposable
     windowHandle,
     viewerHandle,
     useSoftwareRenderer: true,
-    noAudio: true,
+    noAudio: false,
     noVideo: false,
     noInput: false);
+
+        var audioConfig =
+    AudioConfigFactory.CreateDefault();
+
+        MesenNative.SetAudioConfig(
+            audioConfig);
 
         var nesConfig =
     NesConfigFactory.CreateDefault();
@@ -89,6 +95,16 @@ public sealed class MesenEmulator : IDisposable
     }
 
     public void Stop()
+    {
+        if (!_initialized)
+        {
+            return;
+        }
+
+        MesenNative.Stop();
+    }
+
+    public void CloseRom()
     {
         if (!_initialized)
         {

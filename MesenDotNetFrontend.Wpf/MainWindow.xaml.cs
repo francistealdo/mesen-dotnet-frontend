@@ -5,7 +5,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Interop;
 using System.Windows.Input;
-using MesenDotNetFrontend.Core.Interop;
+using MesenDotNetFrontend.Wpf.Input;
 
 namespace MesenDotNetFrontend.Wpf;
 
@@ -13,6 +13,7 @@ public partial class MainWindow : Window
 {
     private readonly MesenEmulator _emulator = new();
     private WriteableBitmap? _bitmap;
+    private readonly NesKeyboardInput _keyboardInput = new();
 
     public MainWindow()
     {
@@ -23,6 +24,94 @@ public partial class MainWindow : Window
         PreviewKeyDown += MainWindow_PreviewKeyDown;
         PreviewKeyUp += MainWindow_PreviewKeyUp;
     }
+
+    #region private methods
+
+    private void MainWindow_SourceInitialized(object? sender, EventArgs e)
+    {
+        try
+        {
+            var helper =
+                new WindowInteropHelper(this);
+
+            var handle = helper.Handle;
+
+            _emulator.Initialize(
+                handle,
+                handle);
+
+            _emulator.FrameReady += OnFrameReady;
+
+            _emulator.SetRendererSize(
+                (uint)Math.Max(
+                    1,
+                    RendererContainer.ActualWidth),
+                (uint)Math.Max(
+                    1,
+                    RendererContainer.ActualHeight));
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                ex.ToString(),
+                "Mesen initialization error",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error);
+        }
+    }
+
+    private void OnFrameReady(byte[] frame, int width, int height)
+    {
+        Dispatcher.BeginInvoke(() =>
+        {
+            if (_bitmap == null ||
+                _bitmap.PixelWidth != width ||
+                _bitmap.PixelHeight != height)
+            {
+                _bitmap = new WriteableBitmap(
+                    width,
+                    height,
+                    96,
+                    96,
+                    PixelFormats.Bgra32,
+                    null);
+
+                EmulatorScreen.Source = _bitmap;
+            }
+
+            var stride = width * 4;
+
+            _bitmap.WritePixels(
+                new Int32Rect(
+                    0,
+                    0,
+                    width,
+                    height),
+                frame,
+                stride,
+                0);
+
+            NoRomText.Visibility =
+                Visibility.Collapsed;
+        });
+    }
+
+    private void RendererContainer_SizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        if (e.NewSize.Width <= 0 ||
+            e.NewSize.Height <= 0)
+        {
+            return;
+        }
+
+        _emulator.SetRendererSize(
+            (uint)Math.Round(e.NewSize.Width),
+            (uint)Math.Round(e.NewSize.Height));
+    }
+
+    #endregion
+
+    #region private methods OnClick
 
     private void OpenRom_Click(object sender, RoutedEventArgs e)
     {
@@ -62,93 +151,34 @@ public partial class MainWindow : Window
         }
     }
 
-    private void MainWindow_SourceInitialized(
-    object? sender,
-    EventArgs e)
+    private void Exit_Click(object sender, RoutedEventArgs e)
     {
-        try
-        {
-            var helper =
-                new WindowInteropHelper(this);
-
-            var handle = helper.Handle;
-
-            _emulator.Initialize(
-                handle,
-                handle);
-
-            _emulator.FrameReady += OnFrameReady;
-
-            _emulator.SetRendererSize(
-                (uint)Math.Max(
-                    1,
-                    RendererContainer.ActualWidth),
-                (uint)Math.Max(
-                    1,
-                    RendererContainer.ActualHeight));
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show(
-                ex.ToString(),
-                "Mesen initialization error",
-                MessageBoxButton.OK,
-                MessageBoxImage.Error);
-        }
+        Close();
     }
 
-    private void OnFrameReady(
-    byte[] frame,
-    int width,
-    int height)
+    #endregion
+
+    #region private methods PreviewKey
+
+    private void MainWindow_PreviewKeyDown(object sender, KeyEventArgs e)
     {
-        Dispatcher.BeginInvoke(() =>
-        {
-            if (_bitmap == null ||
-                _bitmap.PixelWidth != width ||
-                _bitmap.PixelHeight != height)
-            {
-                _bitmap = new WriteableBitmap(
-                    width,
-                    height,
-                    96,
-                    96,
-                    PixelFormats.Bgra32,
-                    null);
-
-                EmulatorScreen.Source = _bitmap;
-            }
-
-            var stride = width * 4;
-
-            _bitmap.WritePixels(
-                new Int32Rect(
-                    0,
-                    0,
-                    width,
-                    height),
-                frame,
-                stride,
-                0);
-
-            NoRomText.Visibility =
-                Visibility.Collapsed;
-        });
+        _keyboardInput.KeyDown(e.Key);
     }
 
-    private void RendererContainer_SizeChanged(
-    object sender,
-    SizeChangedEventArgs e)
+    private void MainWindow_PreviewKeyUp(object sender, KeyEventArgs e)
     {
-        if (e.NewSize.Width <= 0 ||
-            e.NewSize.Height <= 0)
-        {
-            return;
-        }
+        _keyboardInput.KeyUp(e.Key);
+    }
 
-        _emulator.SetRendererSize(
-            (uint)Math.Round(e.NewSize.Width),
-            (uint)Math.Round(e.NewSize.Height));
+    #endregion
+
+    #region protected methods
+
+    protected override void OnDeactivated(EventArgs e)
+    {
+        _keyboardInput.Reset();
+
+        base.OnDeactivated(e);
     }
 
     protected override void OnClosed(EventArgs e)
@@ -158,78 +188,5 @@ public partial class MainWindow : Window
         base.OnClosed(e);
     }
 
-    private void MainWindow_PreviewKeyDown(
-    object sender,
-    KeyEventArgs e)
-    {
-        var keyName = GetMesenKeyName(e.Key);
-
-        if (keyName == null)
-        {
-            return;
-        }
-
-        var keyCode =
-            MesenInputNative.GetKeyCode(keyName);
-
-        if (keyCode != 0)
-        {
-            MesenInputNative.SetKeyState(
-                keyCode,
-                true);
-
-            e.Handled = true;
-        }
-    }
-
-    private void MainWindow_PreviewKeyUp(
-        object sender,
-        KeyEventArgs e)
-    {
-        var keyName = GetMesenKeyName(e.Key);
-
-        if (keyName == null)
-        {
-            return;
-        }
-
-        var keyCode =
-            MesenInputNative.GetKeyCode(keyName);
-
-        if (keyCode != 0)
-        {
-            MesenInputNative.SetKeyState(
-                keyCode,
-                false);
-
-            e.Handled = true;
-        }
-    }
-
-    private static string? GetMesenKeyName(
-    Key key)
-    {
-        return key switch
-        {
-            Key.Up => "Up Arrow",
-            Key.Down => "Down Arrow",
-            Key.Left => "Left Arrow",
-            Key.Right => "Right Arrow",
-
-            Key.A => "A",
-            Key.S => "S",
-            Key.Q => "Q",
-            Key.W => "W",
-
-            _ => null
-        };
-    }
-
-    protected override void OnDeactivated(
-    EventArgs e)
-    {
-        MesenInputNative.ResetKeyState();
-
-        base.OnDeactivated(e);
-    }
+    #endregion
 }

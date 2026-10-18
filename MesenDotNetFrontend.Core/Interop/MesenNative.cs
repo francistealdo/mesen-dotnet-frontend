@@ -76,4 +76,8 @@ public static class MesenNative
     [DllImport(DllName)]
     public static extern void SetNesConfig(
     InteropNesConfig config);
+
+    [DllImport(DllName)]
+    public static extern void SetAudioConfig(
+    InteropAudioConfig config);
 }
