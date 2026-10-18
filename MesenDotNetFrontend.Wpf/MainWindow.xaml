@@ -21,7 +21,11 @@
                 <MenuItem Header="_Help" />
             </Menu>
 
-            <Border Background="Black">
+            <Border
+    x:Name="RendererContainer"
+    Background="Black"
+    SizeChanged="RendererContainer_SizeChanged">
+
                 <Grid>
                     <Image
             x:Name="EmulatorScreen"
@@ -36,6 +40,7 @@
             HorizontalAlignment="Center"
             VerticalAlignment="Center" />
                 </Grid>
+
             </Border>
         </DockPanel>
     </Grid>

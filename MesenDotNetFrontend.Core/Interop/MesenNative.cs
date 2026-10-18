@@ -44,4 +44,36 @@ public static class MesenNative
 
     [DllImport(DllName)]
     public static extern void Release();
+
+    public delegate void NotificationCallback(int type, IntPtr parameter);
+
+    [DllImport(DllName)]
+    public static extern IntPtr RegisterNotificationCallback(
+        NotificationCallback callback);
+
+    [DllImport(DllName)]
+    public static extern void UnregisterNotificationCallback(
+        IntPtr notificationListener);
+
+    [DllImport(DllName)]
+    public static extern void SetRendererSize(
+    uint width,
+    uint height);
+
+    [DllImport(DllName)]
+    public static extern void TakeScreenshot();
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct FrameInfo
+    {
+        public uint Width;
+        public uint Height;
+    }
+
+    [DllImport(DllName)]
+    public static extern FrameInfo GetBaseScreenSize();
+
+    [DllImport(DllName)]
+    public static extern void SetNesConfig(
+    InteropNesConfig config);
 }

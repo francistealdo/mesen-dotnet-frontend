@@ -1,14 +1,21 @@
 ﻿using MesenDotNetFrontend.Core.Interop;
+using System.Runtime.InteropServices;
 
 namespace MesenDotNetFrontend.Core.Emulation;
 
 public sealed class MesenEmulator : IDisposable
 {
     private bool _initialized;
+    private MesenNative.NotificationCallback? _notificationCallback;
+    private IntPtr _notificationListener;
 
     public bool IsRunning => _initialized && MesenNative.IsRunning();
 
-    public void Initialize()
+    public event Action<byte[], int, int>? FrameReady;
+
+    public void Initialize(
+    IntPtr windowHandle,
+    IntPtr viewerHandle)
     {
         if (_initialized)
         {
@@ -24,15 +31,25 @@ public sealed class MesenEmulator : IDisposable
         MesenNative.InitDll();
 
         MesenNative.InitializeEmu(
-            homeFolder,
-            IntPtr.Zero,
-            IntPtr.Zero,
+    homeFolder,
+    windowHandle,
+    viewerHandle,
+    useSoftwareRenderer: true,
+    noAudio: true,
+    noVideo: false,
+    noInput: true);
 
-            useSoftwareRenderer: true,
+        var nesConfig =
+    NesConfigFactory.CreateDefault();
 
-            noAudio: true,
-            noVideo: false,
-            noInput: true);
+        MesenNative.SetNesConfig(
+            nesConfig);
+
+        _notificationCallback = OnNotification;
+
+        _notificationListener =
+            MesenNative.RegisterNotificationCallback(
+                _notificationCallback);
 
         _initialized = true;
     }
@@ -81,6 +98,18 @@ public sealed class MesenEmulator : IDisposable
         MesenNative.Stop();
     }
 
+    public void SetRendererSize(
+    uint width,
+    uint height)
+    {
+        if (!_initialized)
+        {
+            return;
+        }
+
+        MesenNative.SetRendererSize(width, height);
+    }
+
     private void EnsureInitialized()
     {
         if (!_initialized)
@@ -98,8 +127,83 @@ public sealed class MesenEmulator : IDisposable
         }
 
         MesenNative.Stop();
+
+        if (_notificationListener != IntPtr.Zero)
+        {
+            MesenNative.UnregisterNotificationCallback(
+                _notificationListener);
+
+            _notificationListener = IntPtr.Zero;
+        }
+
         MesenNative.Release();
 
         _initialized = false;
+    }
+
+    private void OnNotification(
+    int type,
+    IntPtr parameter)
+    {
+        var notificationType =
+            (ConsoleNotificationType)type;
+
+        if (notificationType !=
+            ConsoleNotificationType.RefreshSoftwareRenderer)
+        {
+            return;
+        }
+
+        if (parameter == IntPtr.Zero)
+        {
+            return;
+        }
+
+        var frameInfo =
+            Marshal.PtrToStructure<SoftwareRendererFrame>(
+                parameter);
+
+        var frame = frameInfo.Frame;
+
+        if (frame.FrameBuffer == IntPtr.Zero ||
+            frame.Width == 0 ||
+            frame.Height == 0)
+        {
+            return;
+        }
+
+        var width = checked((int)frame.Width);
+        var height = checked((int)frame.Height);
+
+        var size =
+            checked(width * height * 4);
+
+        var buffer = new byte[size];
+
+        Marshal.Copy(
+            frame.FrameBuffer,
+            buffer,
+            0,
+            size);
+
+        FrameReady?.Invoke(
+            buffer,
+            width,
+            height);
+    }
+
+    public void TakeScreenshot()
+    {
+        EnsureInitialized();
+        MesenNative.TakeScreenshot();
+    }
+
+    public (uint Width, uint Height) GetBaseScreenSize()
+    {
+        EnsureInitialized();
+
+        var size = MesenNative.GetBaseScreenSize();
+
+        return (size.Width, size.Height);
     }
 }
