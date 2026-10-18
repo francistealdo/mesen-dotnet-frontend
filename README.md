@@ -16,8 +16,10 @@ The project can currently:
 - Receive software-rendered video frames from Mesen
 - Display NES video output in a WPF `WriteableBitmap`
 - Resize the renderer with the application window
+- Handle NES keyboard input
+- Play audio through Mesen's native audio system
 
-Audio and input integration are still under development.
+Basic emulator controls and additional features are still under development.
 
 ## Tech stack
 
@@ -49,6 +51,8 @@ This repository does not include Mesen binaries.
 Download/build a compatible MesenCore.dll and place it at:
 
 MesenDotNetFrontend.Wpf/Native/MesenCore.dll
+
+This frontend currently targets MesenCE 2.2.1.
 
 ## License
 
