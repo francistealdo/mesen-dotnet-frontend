@@ -4,6 +4,8 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Interop;
+using System.Windows.Input;
+using MesenDotNetFrontend.Core.Interop;
 
 namespace MesenDotNetFrontend.Wpf;
 
@@ -17,6 +19,9 @@ public partial class MainWindow : Window
         InitializeComponent();
 
         SourceInitialized += MainWindow_SourceInitialized;
+
+        PreviewKeyDown += MainWindow_PreviewKeyDown;
+        PreviewKeyUp += MainWindow_PreviewKeyUp;
     }
 
     private void OpenRom_Click(object sender, RoutedEventArgs e)
@@ -151,5 +156,80 @@ public partial class MainWindow : Window
         _emulator.Dispose();
 
         base.OnClosed(e);
+    }
+
+    private void MainWindow_PreviewKeyDown(
+    object sender,
+    KeyEventArgs e)
+    {
+        var keyName = GetMesenKeyName(e.Key);
+
+        if (keyName == null)
+        {
+            return;
+        }
+
+        var keyCode =
+            MesenInputNative.GetKeyCode(keyName);
+
+        if (keyCode != 0)
+        {
+            MesenInputNative.SetKeyState(
+                keyCode,
+                true);
+
+            e.Handled = true;
+        }
+    }
+
+    private void MainWindow_PreviewKeyUp(
+        object sender,
+        KeyEventArgs e)
+    {
+        var keyName = GetMesenKeyName(e.Key);
+
+        if (keyName == null)
+        {
+            return;
+        }
+
+        var keyCode =
+            MesenInputNative.GetKeyCode(keyName);
+
+        if (keyCode != 0)
+        {
+            MesenInputNative.SetKeyState(
+                keyCode,
+                false);
+
+            e.Handled = true;
+        }
+    }
+
+    private static string? GetMesenKeyName(
+    Key key)
+    {
+        return key switch
+        {
+            Key.Up => "Up Arrow",
+            Key.Down => "Down Arrow",
+            Key.Left => "Left Arrow",
+            Key.Right => "Right Arrow",
+
+            Key.A => "A",
+            Key.S => "S",
+            Key.Q => "Q",
+            Key.W => "W",
+
+            _ => null
+        };
+    }
+
+    protected override void OnDeactivated(
+    EventArgs e)
+    {
+        MesenInputNative.ResetKeyState();
+
+        base.OnDeactivated(e);
     }
 }

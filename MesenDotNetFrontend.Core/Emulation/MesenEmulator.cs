@@ -37,7 +37,7 @@ public sealed class MesenEmulator : IDisposable
     useSoftwareRenderer: true,
     noAudio: true,
     noVideo: false,
-    noInput: true);
+    noInput: false);
 
         var nesConfig =
     NesConfigFactory.CreateDefault();
