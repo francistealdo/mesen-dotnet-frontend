@@ -10,13 +10,14 @@ The goal of this project is to explore native interoperability between .NET and 
 
 The project can currently:
 
-- Load `MesenCore.dll`
-- Initialize the Mesen emulator core
-- Open NES ROM files
-- Start ROM execution
-- Check the emulator running state
+- Load and initialize `MesenCore.dll`
+- Open and run NES ROM files
+- Apply a basic NES core configuration
+- Receive software-rendered video frames from Mesen
+- Display NES video output in a WPF `WriteableBitmap`
+- Resize the renderer with the application window
 
-Video, audio, and input integration are still under development.
+Audio and input integration are still under development.
 
 ## Tech stack
 
@@ -30,14 +31,28 @@ Video, audio, and input integration are still under development.
 
 ```text
 mesen-dotnet-frontend/
-├── mesen-dotnet-frontend.sln
+├── mesen-dotnet-frontend.slnx
 ├── MesenDotNetFrontend.Core/
 │   ├── Emulation/
-│   ├── Interop/
-│   └── Models/
-│
+│   └── Interop/
 └── MesenDotNetFrontend.Wpf/
     ├── Native/
     ├── Resources/
     ├── App.xaml
     └── MainWindow.xaml
+```
+
+## MesenCore.dll
+
+This repository does not include Mesen binaries.
+
+Download/build a compatible MesenCore.dll and place it at:
+
+MesenDotNetFrontend.Wpf/Native/MesenCore.dll
+
+## License
+
+This project is licensed under the GNU General Public License v3.0.
+
+It uses the Mesen emulator core, which is also licensed under the GNU GPL v3.
+Mesen is a separate project and is not affiliated with or endorsed by this project.
