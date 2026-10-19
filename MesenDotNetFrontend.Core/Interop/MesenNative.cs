@@ -143,4 +143,20 @@ public static class MesenNative
     [DllImport(DllName)]
     public static extern void ExecuteShortcut(
     ExecuteShortcutParams p);
+
+    public enum EmulationFlags : uint
+    {
+        Turbo = 0x01,
+        Rewind = 0x02,
+        MaximumSpeed = 0x04,
+        InBackground = 0x08,
+        ConsoleMode = 0x10,
+        TestMode = 0x20,
+        OutputToStdout = 0x40
+    }
+
+    [DllImport(DllName)]
+    public static extern void SetEmulationFlag(
+    EmulationFlags flag,
+    [MarshalAs(UnmanagedType.I1)] bool enabled);
 }

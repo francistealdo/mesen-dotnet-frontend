@@ -269,4 +269,11 @@ public sealed class MesenEmulator : IDisposable
 
         MesenNative.SetNesConfig(nesConfig);
     }
+
+    public void SetFastForward(bool enabled)
+    {
+        EnsureInitialized();
+
+        MesenNative.SetEmulationFlag(MesenNative.EmulationFlags.Turbo, enabled);
+    }
 }

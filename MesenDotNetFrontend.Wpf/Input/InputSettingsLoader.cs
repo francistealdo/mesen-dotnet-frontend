@@ -49,7 +49,12 @@ public static class InputSettingsLoader
             Select = GetValue(
                 values,
                 "Select",
-                "Q")
+                "Q"),
+
+            FastForward = GetValue(
+                values,
+                "FastForward",
+                "Tab")
         };
     }
 

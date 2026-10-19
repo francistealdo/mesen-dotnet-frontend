@@ -40,6 +40,8 @@ public partial class ControlsSettingsWindow : Window
         SetButtonValue(StartButton, "Start");
 
         SetButtonValue(SelectButton, "Select");
+
+        SetButtonValue(FastForwardButton, "FastForward");
     }
 
     private void SetButtonValue(Button button, string action)

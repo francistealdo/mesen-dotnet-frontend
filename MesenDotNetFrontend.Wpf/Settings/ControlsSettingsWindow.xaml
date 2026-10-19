@@ -37,6 +37,7 @@
                 <RowDefinition/>
                 <RowDefinition/>
                 <RowDefinition/>
+                <RowDefinition/>
             </Grid.RowDefinitions>
 
             <TextBlock Grid.Row="0" Text="Up" VerticalAlignment="Center"/>
@@ -101,6 +102,15 @@
                 Grid.Row="7"
                 Grid.Column="1"
                 Tag="Select"
+                Click="KeyButton_Click"/>
+
+            <TextBlock Grid.Row="8" Text="Fast Forward" VerticalAlignment="Center"/>
+
+            <Button
+                x:Name="FastForwardButton"
+                Grid.Row="8"
+                Grid.Column="1"
+                Tag="FastForward"
                 Click="KeyButton_Click"/>
 
         </Grid>

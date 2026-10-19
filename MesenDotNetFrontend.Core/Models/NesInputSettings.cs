@@ -12,4 +12,5 @@ public sealed class NesInputSettings
 
     public string Start { get; set; } = "W";
     public string Select { get; set; } = "Q";
+    public string FastForward { get; set; } = "Tab";
 }

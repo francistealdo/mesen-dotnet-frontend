@@ -15,7 +15,7 @@ public partial class MainWindow : Window
 {
     private readonly MesenEmulator _emulator = new();
     private WriteableBitmap? _bitmap;
-    private readonly NesKeyboardInput _keyboardInput = new();
+    private NesKeyboardInput? _keyboardInput;
 
     public MainWindow()
     {
@@ -40,6 +40,8 @@ public partial class MainWindow : Window
             var inputSettings = InputSettingsLoader.Load();
 
             _emulator.Initialize(handle, handle, inputSettings);
+
+            _keyboardInput = new NesKeyboardInput(_emulator, inputSettings);
 
             _emulator.FrameReady += OnFrameReady;
 
@@ -243,6 +245,8 @@ public partial class MainWindow : Window
             var inputSettings = InputSettingsLoader.Load();
 
             _emulator.ApplyInputSettings(inputSettings);
+
+            _keyboardInput?.UpdateSettings(inputSettings);
         };
 
         window.ShowDialog();
@@ -254,12 +258,12 @@ public partial class MainWindow : Window
 
     private void MainWindow_PreviewKeyDown(object sender, KeyEventArgs e)
     {
-        _keyboardInput.KeyDown(e.Key);
+        _keyboardInput?.KeyDown(e.Key);
     }
 
     private void MainWindow_PreviewKeyUp(object sender, KeyEventArgs e)
     {
-        _keyboardInput.KeyUp(e.Key);
+        _keyboardInput?.KeyUp(e.Key);
     }
 
     #endregion
