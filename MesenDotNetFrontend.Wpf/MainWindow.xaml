@@ -55,7 +55,7 @@
                             VerticalAlignment="Center">
 
                             <Image
-                                Source="pack://application:,,,/Resources/messen-dotnet-frontend.png"
+                                Source="pack://application:,,,/Resources/mesen-dotnet-frontend.png"
                                 Width="220"
                                 Stretch="Uniform"
                                 HorizontalAlignment="Center" />
