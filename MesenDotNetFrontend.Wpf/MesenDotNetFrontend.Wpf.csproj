@@ -1,25 +1,28 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net10.0-windows</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <UseWPF>true</UseWPF>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net10.0-windows</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<UseWPF>true</UseWPF>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\MesenDotNetFrontend.Core\MesenDotNetFrontend.Core.csproj" />
-    <ProjectReference Include="..\MesenDotNetFrontend.Infrastructure\MesenDotNetFrontend.Infrastructure.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\MesenDotNetFrontend.Core\MesenDotNetFrontend.Core.csproj" />
+		<ProjectReference Include="..\MesenDotNetFrontend.Infrastructure\MesenDotNetFrontend.Infrastructure.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Native\" />
-    <Folder Include="Resources\" />
-	  <None Include="Native\MesenCore.dll">
-		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		  <TargetPath>MesenCore.dll</TargetPath>
-	  </None>
-  </ItemGroup>
+	<ItemGroup>
+		<Resource Include="Resources\messen-dotnet-frontend.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="Native\" />
+		<None Include="Native\MesenCore.dll">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<TargetPath>MesenCore.dll</TargetPath>
+		</None>
+	</ItemGroup>
 
 </Project>

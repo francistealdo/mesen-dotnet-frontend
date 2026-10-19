@@ -96,7 +96,10 @@ public partial class MainWindow : Window
                 stride,
                 0);
 
-            NoRomText.Visibility = Visibility.Collapsed;
+            if (_emulator.CurrentRomPath != null)
+            {
+                NoRomContent.Visibility = Visibility.Collapsed;
+            }
         });
     }
 
@@ -121,7 +124,7 @@ public partial class MainWindow : Window
 
             EmulatorScreen.Source = null;
 
-            NoRomText.Visibility = Visibility.Visible;
+            NoRomContent.Visibility = Visibility.Visible;
 
             PauseResumeMenuItem.Header = "_Pause";
 

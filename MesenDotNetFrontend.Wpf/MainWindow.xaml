@@ -45,13 +45,31 @@
                         Stretch="Uniform"
                         RenderOptions.BitmapScalingMode="NearestNeighbor" />
 
-                    <TextBlock
-                        x:Name="NoRomText"
-                        Text="No ROM loaded"
-                        Foreground="White"
-                        FontSize="24"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center" />
+                    <Border
+                        x:Name="NoRomContent"
+                        Background="Black"
+                        Panel.ZIndex="10">
+
+                        <StackPanel
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center">
+
+                            <Image
+                                Source="pack://application:,,,/Resources/messen-dotnet-frontend.png"
+                                Width="220"
+                                Stretch="Uniform"
+                                HorizontalAlignment="Center" />
+
+                            <TextBlock
+                                Text="No ROM loaded"
+                                Foreground="White"
+                                HorizontalAlignment="Center"
+                                Margin="0,16,0,0"
+                                Opacity="0.7" />
+
+                        </StackPanel>
+
+                    </Border>
                 </Grid>
 
             </Border>
