@@ -132,7 +132,7 @@ public partial class MainWindow : Window
 
             PauseResumeMenuItem.Header = "_Pause";
 
-            _keyboardInput.Reset();
+            _keyboardInput?.Reset();
         });
     }
 
@@ -189,9 +189,11 @@ public partial class MainWindow : Window
             return;
         }
 
+        var romName = _emulator.CurrentRomName;
+
         _emulator.CloseRom();
 
-        AppLogRepository.Write(rom: _emulator.CurrentRomName, category: "Rom", description: "Close ROM");
+        AppLogRepository.Write(rom: romName, category: "Rom", description: "Close ROM");
     }
 
     private void PauseResume_Click(object sender, RoutedEventArgs e)
@@ -552,7 +554,7 @@ public partial class MainWindow : Window
 
     protected override void OnDeactivated(EventArgs e)
     {
-        _keyboardInput.Reset();
+        _keyboardInput?.Reset();
 
         base.OnDeactivated(e);
     }
