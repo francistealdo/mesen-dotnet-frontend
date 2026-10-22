@@ -1,6 +1,7 @@
 ﻿using MesenDotNetFrontend.Core.Emulation;
 using MesenDotNetFrontend.Core.Interop;
 using MesenDotNetFrontend.Infrastructure.Persistence;
+using MesenDotNetFrontend.Wpf.About;
 using MesenDotNetFrontend.Wpf.Input;
 using MesenDotNetFrontend.Wpf.SaveStates;
 using MesenDotNetFrontend.Wpf.Settings;
@@ -494,6 +495,16 @@ public partial class MainWindow : Window
                 File.Delete(tempPath);
             }
         }
+    }
+
+    private void About_Click(object sender, RoutedEventArgs e)
+    {
+        var window = new AboutWindow
+            {
+                Owner = this
+            };
+
+        window.ShowDialog();
     }
 
     #endregion

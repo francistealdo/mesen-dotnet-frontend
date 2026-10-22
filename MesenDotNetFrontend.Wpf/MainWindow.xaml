@@ -60,7 +60,11 @@
                     Click="ControlsSettings_Click" />
                 </MenuItem>
 
-                <MenuItem Header="_Help" />
+                <MenuItem Header="_Help">
+                    <MenuItem
+                        Header="_About"
+                        Click="About_Click" />
+                </MenuItem>
             </Menu>
 
             <Border
