@@ -159,4 +159,24 @@ public static class MesenNative
     public static extern void SetEmulationFlag(
     EmulationFlags flag,
     [MarshalAs(UnmanagedType.I1)] bool enabled);
+
+    #region State
+
+    [DllImport(DllName)]
+    public static extern void SaveStateFile(
+    [MarshalAs(UnmanagedType.LPUTF8Str)]
+    string filepath);
+
+    [DllImport(DllName)]
+    public static extern void LoadStateFile(
+    [MarshalAs(UnmanagedType.LPUTF8Str)]
+    string filepath);
+
+    [DllImport(DllName, EntryPoint = "GetSaveStatePreview")]
+    public static extern int GetSaveStatePreviewNative(
+    [MarshalAs(UnmanagedType.LPUTF8Str)]
+    string saveStatePath,
+    [Out] byte[] imageData);
+
+    #endregion
 }

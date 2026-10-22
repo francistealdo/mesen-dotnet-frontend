@@ -34,6 +34,7 @@ public static class AppDatabase
 
         CreateLogTable(connection);
         CreateInputSettingsTable(connection);
+        CreateSaveStatesTable(connection);
     }
 
     #region Tables
@@ -69,6 +70,27 @@ public static class AppDatabase
                 Action TEXT NOT NULL UNIQUE,
                 KeyName TEXT NOT NULL
             );
+            """;
+
+        command.ExecuteNonQuery();
+    }
+
+    private static void CreateSaveStatesTable(SqliteConnection connection)
+    {
+        using var command = connection.CreateCommand();
+
+        command.CommandText =
+            """
+            CREATE TABLE IF NOT EXISTS SaveStates
+            (
+                Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                RomName TEXT NOT NULL,
+                RomHash TEXT NULL,
+                Name TEXT NULL,
+                StateData BLOB NOT NULL,
+                ScreenshotData BLOB NULL,
+                CreatedAt TEXT NOT NULL
+            );;
             """;
 
         command.ExecuteNonQuery();

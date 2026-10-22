@@ -1,8 +1,11 @@
 ﻿using MesenDotNetFrontend.Core.Emulation;
+using MesenDotNetFrontend.Core.Interop;
 using MesenDotNetFrontend.Infrastructure.Persistence;
 using MesenDotNetFrontend.Wpf.Input;
+using MesenDotNetFrontend.Wpf.SaveStates;
 using MesenDotNetFrontend.Wpf.Settings;
 using Microsoft.Win32;
+using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
@@ -255,12 +258,275 @@ public partial class MainWindow : Window
         window.ShowDialog();
     }
 
+    #region State
+
+    private void SaveState_Click(object sender, RoutedEventArgs e)
+    {
+        NewSave();
+    }
+
+    private void LoadState_Click(object sender, RoutedEventArgs e)
+    {
+        LoadGame();
+    }
+
+    private void QuickSave_Click(object sender, RoutedEventArgs e)
+    {
+        QuickSave();
+    }
+
+    private void QuickLoad_Click(object sender, RoutedEventArgs e)
+    {
+        QuickLoad();
+    }
+
+    private void NewSave()
+    {
+        if (!_emulator.IsRunning || string.IsNullOrEmpty(_emulator.CurrentRomName))
+        {
+            return;
+        }
+
+        var tempPath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid():N}.mss");
+
+        try
+        {
+            _emulator.SaveStateFile(tempPath);
+
+            var stateData = File.ReadAllBytes(tempPath);
+
+            var screenshotData = MesenNativeWrapper.GetSaveStatePreview(tempPath);
+
+            if (screenshotData == null)
+            {
+                MessageBox.Show(
+                    "Unable to create the save state preview.",
+                    "Save State",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+
+                return;
+            }
+
+            var window = new SaveStateWindow(screenshotData, "Save State");
+
+            window.Owner = this;
+
+            if (window.ShowDialog() != true)
+            {
+                return;
+            }
+
+            SaveStateRepository.Insert(
+                romName:
+                    _emulator.CurrentRomName,
+                romHash: null,
+                name:
+                    window.SaveName,
+                stateData:
+                    stateData,
+                screenshotData:
+                    screenshotData);
+
+            AppLogRepository.Write(
+                rom:
+                    _emulator.CurrentRomName,
+                category:
+                    "SaveState",
+                description:
+                    $"Save State: {window.SaveName}");
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                ex.ToString(),
+                "Save State Error",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error);
+        }
+        finally
+        {
+            if (File.Exists(tempPath))
+            {
+                File.Delete(tempPath);
+            }
+        }
+    }
+
+    private void LoadGame()
+    {
+        if (!_emulator.IsRunning || string.IsNullOrEmpty(_emulator.CurrentRomName))
+        {
+            return;
+        }
+
+        var window = new LoadGameWindow(_emulator.CurrentRomName)
+            {
+                Owner = this
+            };
+
+        if (window.ShowDialog() != true || window.SelectedSaveStateId == null)
+        {
+            return;
+        }
+
+        var stateData = SaveStateRepository.GetStateData(window.SelectedSaveStateId.Value);
+
+        if (stateData == null)
+        {
+            return;
+        }
+
+        var tempPath =
+            Path.Combine(
+                Path.GetTempPath(),
+                $"{Guid.NewGuid():N}.mss");
+
+        try
+        {
+            File.WriteAllBytes(tempPath, stateData);
+
+            _emulator.LoadStateFile(tempPath);
+
+            AppLogRepository.Write(
+                rom:
+                    _emulator.CurrentRomName,
+                category:
+                    "SaveState",
+                description:
+                    "Load Game");
+        }
+        finally
+        {
+            if (File.Exists(tempPath))
+            {
+                File.Delete(tempPath);
+            }
+        }
+    }
+
+    private void QuickSave()
+    {
+        if (!_emulator.IsRunning || string.IsNullOrEmpty(_emulator.CurrentRomName))
+        {
+            return;
+        }
+
+        var tempPath =
+            Path.Combine(
+                Path.GetTempPath(),
+                $"{Guid.NewGuid():N}.mss");
+
+        try
+        {
+            _emulator.SaveStateFile(tempPath);
+
+            var stateData =
+                File.ReadAllBytes(tempPath);
+
+            var screenshotData =
+                MesenNativeWrapper.GetSaveStatePreview(tempPath);
+
+            SaveStateRepository.Insert(
+                romName: _emulator.CurrentRomName,
+                romHash: null,
+                name: "Quick Save",
+                stateData: stateData,
+                screenshotData: screenshotData);
+
+            AppLogRepository.Write(
+                rom: _emulator.CurrentRomName,
+                category: "SaveState",
+                description: "Quick Save");
+        }
+        finally
+        {
+            if (File.Exists(tempPath))
+            {
+                File.Delete(tempPath);
+            }
+        }
+    }
+
+    private void QuickLoad()
+    {
+        if (!_emulator.IsRunning || string.IsNullOrEmpty(_emulator.CurrentRomName))
+        {
+            return;
+        }
+
+        var stateData = SaveStateRepository.GetLatestQuickSave(_emulator.CurrentRomName);
+
+        if (stateData == null)
+        {
+            MessageBox.Show(
+                "No Quick Save was found for this ROM.",
+                "Quick Load",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+
+            return;
+        }
+
+        var tempPath =
+            Path.Combine(
+                Path.GetTempPath(),
+                $"{Guid.NewGuid():N}.mss");
+
+        try
+        {
+            File.WriteAllBytes(
+                tempPath,
+                stateData);
+
+            _emulator.LoadStateFile(
+                tempPath);
+
+            AppLogRepository.Write(
+                rom: _emulator.CurrentRomName,
+                category: "SaveState",
+                description: "Quick Load");
+        }
+        finally
+        {
+            if (File.Exists(tempPath))
+            {
+                File.Delete(tempPath);
+            }
+        }
+    }
+
+    #endregion
+
     #endregion
 
     #region private methods PreviewKey
 
     private void MainWindow_PreviewKeyDown(object sender, KeyEventArgs e)
     {
+        switch (e.Key)
+        {
+            case Key.F1:
+                QuickSave();
+                e.Handled = true;
+                return;
+
+            case Key.F2:
+                NewSave();
+                e.Handled = true;
+                return;
+
+            case Key.F3:
+                QuickLoad();
+                e.Handled = true;
+                return;
+
+            case Key.F4:
+                LoadGame();
+                e.Handled = true;
+                return;
+        }
+
         _keyboardInput?.KeyDown(e.Key);
     }
 

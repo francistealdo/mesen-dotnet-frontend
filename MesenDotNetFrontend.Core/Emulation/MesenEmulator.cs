@@ -276,4 +276,39 @@ public sealed class MesenEmulator : IDisposable
 
         MesenNative.SetEmulationFlag(MesenNative.EmulationFlags.Turbo, enabled);
     }
+
+    #region State
+
+    public void SaveStateFile(string path)
+    {
+        EnsureInitialized();
+
+        if (!IsRunning)
+        {
+            return;
+        }
+
+        MesenNative.SaveStateFile(path);
+    }
+
+    public void LoadStateFile(string path)
+    {
+        EnsureInitialized();
+
+        if (!IsRunning)
+        {
+            return;
+        }
+
+        if (!File.Exists(path))
+        {
+            throw new FileNotFoundException(
+                "Save state file was not found.",
+                path);
+        }
+
+        MesenNative.LoadStateFile(path);
+    }
+
+    #endregion
 }

@@ -18,11 +18,40 @@
                 </MenuItem>
 
                 <MenuItem Header="_Emulation">
+
                     <MenuItem
                         x:Name="PauseResumeMenuItem"
                         Header="_Pause"
-                        Click="PauseResume_Click" />    
-                    <MenuItem Header="_Reset" Click="Reset_Click" />
+                        Click="PauseResume_Click" />
+
+                    <MenuItem
+                        Header="_Reset"
+                        Click="Reset_Click" />
+
+                    <Separator />
+
+                    <MenuItem
+                        Header="_Quick Save"
+                        InputGestureText="F1"
+                        Click="QuickSave_Click" />
+
+                    <MenuItem
+                        Header="Quick _Load"
+                        InputGestureText="F3"
+                        Click="QuickLoad_Click" />
+
+                    <Separator />
+
+                    <MenuItem
+                        Header="_New Save..."
+                        InputGestureText="F2"
+                        Click="SaveState_Click" />
+
+                    <MenuItem
+                        Header="_Load Game..."
+                        InputGestureText="F4"
+                        Click="LoadState_Click" />
+
                 </MenuItem>
 
                 <MenuItem Header="_Settings">
