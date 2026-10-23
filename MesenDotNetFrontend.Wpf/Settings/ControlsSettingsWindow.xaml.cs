@@ -37,6 +37,10 @@ public partial class ControlsSettingsWindow : Window
 
         SetButtonValue(BButton, "B");
 
+        SetButtonValue(TurboAButton, "TurboA");
+
+        SetButtonValue(TurboBButton, "TurboB");
+
         SetButtonValue(StartButton, "Start");
 
         SetButtonValue(SelectButton, "Select");

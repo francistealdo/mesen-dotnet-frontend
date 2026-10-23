@@ -9,6 +9,8 @@ public sealed class NesInputSettings
 
     public string A { get; set; } = "S";
     public string B { get; set; } = "A";
+    public string TurboA { get; set; } = "D";
+    public string TurboB { get; set; } = "F";
 
     public string Start { get; set; } = "W";
     public string Select { get; set; } = "Q";

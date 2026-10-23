@@ -41,6 +41,16 @@ public static class InputSettingsLoader
                 "B",
                 "A"),
 
+            TurboA = GetValue(
+                values,
+                "TurboA",
+                "D"),
+
+            TurboB = GetValue(
+                values,
+                "TurboB",
+                "F"),
+
             Start = GetValue(
                 values,
                 "Start",

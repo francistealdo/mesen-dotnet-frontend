@@ -147,6 +147,14 @@ public static class NesConfigFactory
             MesenInputNative.GetKeyCode(
                 settings.B);
 
+        mapping.TurboA =
+            MesenInputNative.GetKeyCode(
+                settings.TurboA);
+
+        mapping.TurboB =
+            MesenInputNative.GetKeyCode(
+                settings.TurboB);
+
         mapping.Up =
             MesenInputNative.GetKeyCode(
                 settings.Up);

@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Controls"
         Width="360"
-        Height="430"
+        Height="500"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterOwner">
 
@@ -29,6 +29,8 @@
             </Grid.ColumnDefinitions>
 
             <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
                 <RowDefinition/>
                 <RowDefinition/>
                 <RowDefinition/>
@@ -88,27 +90,42 @@
                 Tag="B"
                 Click="KeyButton_Click"/>
 
-            <TextBlock Grid.Row="6" Text="Start" VerticalAlignment="Center"/>
+            <TextBlock Grid.Row="6" Text="Turbo A" VerticalAlignment="Center"/>
+            <Button
+                x:Name="TurboAButton"
+                Grid.Row="6"
+                Grid.Column="1"
+                Tag="TurboA"
+                Click="KeyButton_Click"/>
+
+            <TextBlock Grid.Row="7" Text="Turbo B" VerticalAlignment="Center"/>
+            <Button
+                x:Name="TurboBButton"
+                Grid.Row="7"
+                Grid.Column="1"
+                Tag="TurboB"
+                Click="KeyButton_Click"/>
+
+            <TextBlock Grid.Row="8" Text="Start" VerticalAlignment="Center"/>
             <Button
                 x:Name="StartButton"
-                Grid.Row="6"
+                Grid.Row="8"
                 Grid.Column="1"
                 Tag="Start"
                 Click="KeyButton_Click"/>
 
-            <TextBlock Grid.Row="7" Text="Select" VerticalAlignment="Center"/>
+            <TextBlock Grid.Row="9" Text="Select" VerticalAlignment="Center"/>
             <Button
                 x:Name="SelectButton"
-                Grid.Row="7"
+                Grid.Row="9"
                 Grid.Column="1"
                 Tag="Select"
                 Click="KeyButton_Click"/>
 
-            <TextBlock Grid.Row="8" Text="Fast Forward" VerticalAlignment="Center"/>
-
+            <TextBlock Grid.Row="10" Text="Fast Forward" VerticalAlignment="Center"/>
             <Button
                 x:Name="FastForwardButton"
-                Grid.Row="8"
+                Grid.Row="10"
                 Grid.Column="1"
                 Tag="FastForward"
                 Click="KeyButton_Click"/>
